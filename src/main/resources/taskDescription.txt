@@ -1,0 +1,7 @@
+1. ID (int)
+3. Task Name (String)
+2. Creation date (Date)
+4. Status: Open  / Closed (Boolean)
+5. Task body (String)
+6. Edit date (Date)
+7. Deadline (Date)

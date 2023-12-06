@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Task</title>
+</head>
+<body>
+    Task#: <p th:text="${task_Id} + ' '+ ${task.getName()} + ', ' + ${task.getCreationDate()}">taskName + creation date</p>
+    <hr/>
+    Creator: <p th:text="">value</p>
+    Description: <p th:text="${task.getBody()}">taskBody</p>
+    <hr/>
+    <a href="/alltasks"><input type="button" value="Return"></a>
+</body>
+</html>

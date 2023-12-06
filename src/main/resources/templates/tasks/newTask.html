@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task</title>
+</head>
+<body>
+    <form th:method="POST" th:action="@{/alltasks}" th:object="${task}">
+        <label for="task_name">Enter task Name: </label>
+        <input th:type="text" th:field="*{name}" id="task_name"/>
+        <br/>
+        <label for="task_body">To Do: </label>
+        <input th:type="text" th:field="*{body}" id="task_body"/>
+        <br/>
+        <label for="task_deadline">Deadline: </label>
+        <input th:type="date" th:field="*{deadline}" id="task_deadline"/>
+        <br/>
+        <button type="submit">Create Task</button>
+        <a href="/alltasks"><input type="button" value="Return"></a>
+    </form>
+</body>
+</html>
