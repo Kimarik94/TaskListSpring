@@ -1,19 +1,18 @@
 package ru.imp.TaskListSpring.models;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.userdetails.UserDetails;
-import ru.imp.TaskListSpring.enums.PersonRole;
+import org.apache.catalina.User;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "persons")
-public class Person  {
+public class Person {
     @Id
     @Column(name = "person_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,6 @@ public class Person  {
 
     @Column(name = "person_name")
     @NotEmpty(message = "Please input your full name!")
-    //Full name had to be in format "Second Name +" "+ First Name+ " " + Middle Name
     @Pattern(regexp = "[A-Z]\\w+ [A-Z]\\w+ [A-Z]\\w+", message = "Expectation \"SecondName FirstName MiddleName\"")
     private String name;
 
@@ -47,10 +45,6 @@ public class Person  {
     @NotEmpty(message = "Field password has not to be empty")
     private String password;
 
-    @Column(name = "person_role")
-    @Enumerated(EnumType.STRING)
-    private PersonRole personRole;
-
     public Person() {
 
     }
@@ -63,7 +57,6 @@ public class Person  {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.personRole = PersonRole.USER;
     }
 
     public int getId() {
@@ -133,5 +126,9 @@ public class Person  {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthority() {
+        return null;
     }
 }
