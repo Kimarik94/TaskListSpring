@@ -5,10 +5,10 @@
     <title>Success!</title>
 </head>
 <body>
-You had complete authentication.
-<br/>
-Now You can use links below:
-<br/>
+
+<p>Welcome, <span th:text="${person.getName()}"></span>!</p>
+<p>Your roles: <span th:text="${person}" th:text="${role}"></span></p>
 <p>Click <a th:href="@{/alltasks}">here</a></p>
+
 </body>
 </html>

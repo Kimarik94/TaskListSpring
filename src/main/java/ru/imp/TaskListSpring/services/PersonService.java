@@ -28,4 +28,8 @@ public class PersonService {
         Optional<Person> foundedPerson = personRepository.findById(taskId);
         return foundedPerson.orElse(null);
     }
+
+    public Optional<Person> findByUsername(String username){
+        return personRepository.findByUsername(username);
+    }
 }
