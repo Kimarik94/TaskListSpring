@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Success!</title>
@@ -9,6 +9,6 @@ You had complete authentication.
 <br/>
 Now You can use links below:
 <br/>
-<a href="/alltasks">All Tasks</a>
+<p>Click <a th:href="@{/alltasks}">here</a></p>
 </body>
 </html>

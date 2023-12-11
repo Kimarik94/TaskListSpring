@@ -22,7 +22,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping()
+    @GetMapping
     public String allTasks(Model model) {
         model.addAttribute("tasks", taskService.findAllTasks());
         return "tasks/allTasks";
