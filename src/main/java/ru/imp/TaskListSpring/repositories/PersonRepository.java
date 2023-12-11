@@ -7,6 +7,5 @@ import ru.imp.TaskListSpring.models.Person;
 import java.util.Optional;
 
 @Repository
-public interface PersonRepository extends JpaRepository<Person,Integer> {
-    Optional<Person> findByUsername(String username);
+public interface PersonRepository extends JpaRepository<Person, Integer> {
 }

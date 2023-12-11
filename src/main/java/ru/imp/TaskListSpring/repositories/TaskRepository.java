@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.imp.TaskListSpring.models.Task;
 
 @Repository
-public interface TaskRepository extends JpaRepository<Task,Integer> {
+public interface TaskRepository extends JpaRepository<Task, Integer> {
 }

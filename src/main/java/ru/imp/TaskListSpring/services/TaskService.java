@@ -19,28 +19,28 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<Task> findAllTasks(){
+    public List<Task> findAllTasks() {
         return taskRepository.findAll();
     }
 
-    public Task findById(int taskId){
+    public Task findById(int taskId) {
         Optional<Task> foundedTask = taskRepository.findById(taskId);
         return foundedTask.orElse(null);
     }
 
     @Transactional
-    public void updateTask(int taskId, Task updatedTask){
+    public void updateTask(int taskId, Task updatedTask) {
         updatedTask.setId(taskId);
         taskRepository.save(updatedTask);
     }
 
     @Transactional
-    public void createTask(Task task){
+    public void createTask(Task task) {
         taskRepository.save(task);
     }
 
     @Transactional
-    public void deleteTask(int taskId){
+    public void deleteTask(int taskId) {
         taskRepository.deleteById(taskId);
     }
 }

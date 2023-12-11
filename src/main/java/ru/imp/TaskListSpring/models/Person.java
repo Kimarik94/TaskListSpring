@@ -1,19 +1,19 @@
 package ru.imp.TaskListSpring.models;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.imp.TaskListSpring.enums.PersonRole;
 
-import javax.validation.constraints.*;
-import java.util.Collection;
-import java.util.HashSet;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "persons")
-public class Person implements UserDetails {
+public class Person  {
     @Id
     @Column(name = "person_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class Person implements UserDetails {
     @OneToMany(mappedBy = "creatorId", fetch = FetchType.LAZY)
     private List<Task> creatorTasks;
 
-    @Column(name="person_name")
+    @Column(name = "person_name")
     @NotEmpty(message = "Please input your full name!")
     //Full name had to be in format "Second Name +" "+ First Name+ " " + Middle Name
     @Pattern(regexp = "[A-Z]\\w+ [A-Z]\\w+ [A-Z]\\w+", message = "Expectation \"SecondName FirstName MiddleName\"")
@@ -36,40 +36,34 @@ public class Person implements UserDetails {
 
     @NotEmpty(message = "Please input email-address")
     @Column(name = "person_email")
-    @Pattern(regexp = "[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z0-9_-]+", message="Invalid email-format")
+    @Pattern(regexp = "[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z0-9_-]+", message = "Invalid email-format")
     private String email;
 
-    @Column(name="person_username")
+    @Column(name = "person_username")
     @NotEmpty(message = "Username has not to be empty")
     private String username;
 
-    @Column(name="person_password")
+    @Column(name = "person_password")
     @NotEmpty(message = "Field password has not to be empty")
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name="person_role",
-            joinColumns = {@JoinColumn(name="person_id")},
-            inverseJoinColumns = {@JoinColumn(name="role_id")}
-    )
-    private Set<PersonRole> authorities;
+    @Column(name = "person_role")
+    @Enumerated(EnumType.STRING)
+    private PersonRole personRole;
 
     public Person() {
-        super();
-        this.authorities = new HashSet<PersonRole>();
+
     }
 
-    public Person(int id, List<Task> creatorTasks, String name, int age, String email, String username, String password, Set<PersonRole> authorities) {
-        super();
+    public Person(int id, String name, int age, String email, String username, String password) {
         this.id = id;
-        this.creatorTasks = creatorTasks;
+        this.creatorTasks = new ArrayList<>();
         this.name = name;
         this.age = age;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.authorities = authorities;
+        this.personRole = PersonRole.USER;
     }
 
     public int getId() {
@@ -104,10 +98,6 @@ public class Person implements UserDetails {
         this.creatorTasks = creatorTasks;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getName() {
         return name;
     }
@@ -116,46 +106,32 @@ public class Person implements UserDetails {
         this.name = name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setAuthorities(Set<PersonRole> authorities) {
-        this.authorities = authorities;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
     public String getUsername() {
         return username;
     }
 
-    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
-        return this.password;
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", creatorTasks=" + creatorTasks +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

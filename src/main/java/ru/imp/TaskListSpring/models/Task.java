@@ -8,11 +8,11 @@ import ru.imp.TaskListSpring.enums.TaskStatus;
 import java.util.Date;
 
 @Entity
-@Table(name ="taskstable")
+@Table(name = "taskstable")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="task_id")
+    @Column(name = "task_id")
     private int id;
 
     @Column(name = "task_name")
