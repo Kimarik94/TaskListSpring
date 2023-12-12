@@ -1,22 +1,28 @@
 package ru.imp.TaskListSpring.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.imp.TaskListSpring.models.Person;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PersonDetails implements UserDetails {
-
     private final Person person;
 
-    public PersonDetails(Person person) {
-        this.person = person;
+    public PersonDetails(Optional<Person> person) throws Exception {
+        if(person.isEmpty()) throw new Exception("No user presented");
+        this.person = person.get();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return person.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -52,5 +58,4 @@ public class PersonDetails implements UserDetails {
     public Person getPerson(){
         return this.person;
     }
-
 }

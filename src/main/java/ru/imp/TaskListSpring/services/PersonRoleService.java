@@ -7,6 +7,7 @@ import ru.imp.TaskListSpring.models.PersonRole;
 import ru.imp.TaskListSpring.repositories.PersonRoleRepository;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,7 +20,8 @@ public class PersonRoleService {
         this.repository = repository;
     }
 
-    public HashSet<PersonRole> findAllRoles(){
-        return null;
+    public List<PersonRole> findAllRoles(){
+        return repository.findAll();
     }
+
 }

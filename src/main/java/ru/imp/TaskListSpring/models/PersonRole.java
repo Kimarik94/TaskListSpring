@@ -12,24 +12,26 @@ public class PersonRole implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private int id;
+    private Long id;
 
     @Column(name = "role_name")
     private String name;
 
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles")
+    Set<Person> personsByRole;
+
     public PersonRole() {
     }
 
-    public PersonRole(int id, String name) {
-        this.id = id;
+    public PersonRole(String name) {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -39,6 +41,14 @@ public class PersonRole implements GrantedAuthority {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Person> getPersonsByRole() {
+        return personsByRole;
+    }
+
+    public void setPersonsByRole(Set<Person> personsByRole) {
+        this.personsByRole = personsByRole;
     }
 
     @Override

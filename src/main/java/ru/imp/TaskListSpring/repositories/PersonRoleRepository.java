@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.imp.TaskListSpring.models.PersonRole;
 
 @Repository
-public interface PersonRoleRepository extends JpaRepository<PersonRole, Integer> {
+public interface PersonRoleRepository extends JpaRepository<PersonRole, Long> {
 }

@@ -23,13 +23,13 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Task findById(int taskId) {
+    public Task findById(Long taskId) {
         Optional<Task> foundedTask = taskRepository.findById(taskId);
         return foundedTask.orElse(null);
     }
 
     @Transactional
-    public void updateTask(int taskId, Task updatedTask) {
+    public void updateTask(Long taskId, Task updatedTask) {
         updatedTask.setId(taskId);
         taskRepository.save(updatedTask);
     }
@@ -40,7 +40,7 @@ public class TaskService {
     }
 
     @Transactional
-    public void deleteTask(int taskId) {
+    public void deleteTask(Long taskId) {
         taskRepository.deleteById(taskId);
     }
 }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Success!</title>
+</head>
+<body>
+
+<p>Welcome, <span th:text="${person.getName()}"></span>!</p>
+<p>Your roles: <span th:each="role : ${person.getRoles()}" th:text="${role.getName()}"></span></p>
+<p>Task <a th:href="@{/alltasks}">interface</a></p>
+
+</body>
+</html>

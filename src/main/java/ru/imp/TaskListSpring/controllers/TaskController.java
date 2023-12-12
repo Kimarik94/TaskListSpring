@@ -29,7 +29,7 @@ public class TaskController {
     }
 
     @GetMapping("/{task_Id}")
-    public String showTaskById(@PathVariable("task_Id") int taskId, Model model) {
+    public String showTaskById(@PathVariable("task_Id") Long taskId, Model model) {
         model.addAttribute("task", taskService.findById(taskId));
         return "tasks/showTaskById";
     }
@@ -52,7 +52,7 @@ public class TaskController {
     }
 
     @GetMapping("/{task_Id}/edit")
-    public String editTask(Model model, @PathVariable("task_Id") int taskId) {
+    public String editTask(Model model, @PathVariable("task_Id") Long taskId) {
         model.addAttribute("task", taskService.findById(taskId));
         return "tasks/editTask";
     }

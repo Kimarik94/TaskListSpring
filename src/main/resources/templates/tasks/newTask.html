@@ -6,14 +6,15 @@
 </head>
 <body>
 <form th:action="@{/alltasks}" th:method="POST" th:object="${task}">
-    <label for="task_name">Enter task Name: </label>
+    New Task:<br/>
+    <label for="task_name">Name: </label>
     <input id="task_name" th:field="*{name}" th:type="text"/>
     <br/>
-    <label for="task_body">To Do: </label>
-    <input id="task_body" th:field="*{body}" th:type="text"/>
+    <label for="task_body">Description: </label>
+    <input id="task_body" th="*{body}" th:type="text"/>
     <br/>
     <label for="task_deadline">Deadline: </label>
-    <input id="task_deadline" th:field="*{deadline}" th:type="date"/>
+    <input id="task_deadline" th:field="*{deadline}" th:type="text"/>
     <br/>
     <button type="submit">Create Task</button>
     <a href="/alltasks"><input type="button" value="Return"></a>

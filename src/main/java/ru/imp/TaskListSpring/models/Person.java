@@ -1,14 +1,15 @@
 package ru.imp.TaskListSpring.models;
 
 import jakarta.persistence.*;
-import org.apache.catalina.User;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "persons")
@@ -16,7 +17,7 @@ public class Person {
     @Id
     @Column(name = "person_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @OneToMany(mappedBy = "creatorId", fetch = FetchType.LAZY)
     private List<Task> creatorTasks;
@@ -45,12 +46,20 @@ public class Person {
     @NotEmpty(message = "Field password has not to be empty")
     private String password;
 
+    @ManyToMany(fetch = FetchType.EAGER,cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE})
+    @JoinTable(
+            name = "person_roles",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<PersonRole> roles = new HashSet<>();
+
     public Person() {
 
     }
 
-    public Person(int id, String name, int age, String email, String username, String password) {
-        this.id = id;
+    public Person(String name, int age, String email, String username, String password) {
         this.creatorTasks = new ArrayList<>();
         this.name = name;
         this.age = age;
@@ -59,11 +68,11 @@ public class Person {
         this.password = password;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -115,6 +124,22 @@ public class Person {
         this.password = password;
     }
 
+    public Set<PersonRole> getRoles() {
+        return this.roles;
+    }
+
+    public void setRoles(Set<PersonRole> roles) {
+        this.roles = roles;
+    }
+
+    public void addRoleToPerson(PersonRole role){
+        this.roles.add(role);
+    }
+
+    public void deleteRoleFromPerson(PersonRole role){
+        this.roles.remove(role);
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -126,9 +151,5 @@ public class Person {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
-    }
-
-    public Collection<? extends GrantedAuthority> getAuthority() {
-        return null;
     }
 }

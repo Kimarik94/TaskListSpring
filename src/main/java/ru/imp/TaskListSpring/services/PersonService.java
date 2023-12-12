@@ -24,7 +24,7 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Person findById(int taskId) {
+    public Person findById(Long taskId) {
         Optional<Person> foundedPerson = personRepository.findById(taskId);
         return foundedPerson.orElse(null);
     }

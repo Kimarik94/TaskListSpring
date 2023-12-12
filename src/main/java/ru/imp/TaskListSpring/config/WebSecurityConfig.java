@@ -3,22 +3,23 @@ package ru.imp.TaskListSpring.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.imp.TaskListSpring.services.PersonDetailsServiceImpl;
+import ru.imp.TaskListSpring.services.PersonDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final PersonDetailsServiceImpl personDetailsService;
+    private final PersonDetailsService personDetailsService;
 
     @Autowired
-    public WebSecurityConfig(PersonDetailsServiceImpl personDetailsService) {
+    public WebSecurityConfig(PersonDetailsService personDetailsService) {
         this.personDetailsService = personDetailsService;
     }
 
@@ -26,16 +27,14 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home").authenticated()
+                        .requestMatchers("/login","/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/login")
-                        .permitAll()
-                        .defaultSuccessUrl("/success")
-                        .failureUrl("/login")
+                        .loginPage("/login").permitAll()
+                        .defaultSuccessUrl("/home",true)
+                        .failureUrl("/login?error")
                 )
-                .logout(LogoutConfigurer::permitAll)
                 .userDetailsService(personDetailsService);
 
         return http.build();

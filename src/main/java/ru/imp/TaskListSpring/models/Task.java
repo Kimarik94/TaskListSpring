@@ -13,7 +13,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
-    private int id;
+    private Long id;
 
     @Column(name = "task_name")
     private String name;
@@ -49,7 +49,6 @@ public class Task {
     public Task() {
 
     }
-
     public Task(String name, String body, Date deadline) {
         this.name = name;
         this.body = body;
@@ -59,11 +58,11 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
