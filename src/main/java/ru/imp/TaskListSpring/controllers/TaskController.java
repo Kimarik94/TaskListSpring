@@ -1,5 +1,6 @@
 package ru.imp.TaskListSpring.controllers;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.imp.TaskListSpring.enums.TaskPriority;
 import ru.imp.TaskListSpring.enums.TaskStatus;
 import ru.imp.TaskListSpring.models.Task;
+import ru.imp.TaskListSpring.security.PersonDetails;
+import ru.imp.TaskListSpring.services.PersonService;
 import ru.imp.TaskListSpring.services.TaskService;
 
 import javax.validation.Valid;
@@ -18,7 +21,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, PersonService personService) {
         this.taskService = taskService;
     }
 
@@ -35,12 +38,14 @@ public class TaskController {
     }
 
     @GetMapping("/new")
-    public String newTask(Model model) {
+    public String newTask(Model model, Authentication authentication) {
         model.addAttribute("task", new Task());
+        PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+        model.addAttribute("person",personDetails.getPerson());
         return "tasks/newTask";
     }
 
-    @PostMapping()
+    @PostMapping
     public String createTask(@ModelAttribute("task") @Valid Task task) {
         task.setCreationDate(new Date());
         task.setTaskStatus(TaskStatus.OPENED);
