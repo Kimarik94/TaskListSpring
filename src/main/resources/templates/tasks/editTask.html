@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Task</title>
+    <title>Update Task</title>
+    <link rel="stylesheet" href="/tasks/newtask.css">
 </head>
 <body>
-
+<header><label>Creating by: </label><label th:text="${person.getName()}">value</label></header>
+<form th:method="PATCH" th:action="@{/alltasks/{task_Id}(task_Id=${task.getId()})}" th:object="${task}">
+    <label for="task_name">Task name: </label>
+    <input th:type="text" th:field="*{name}" id="task_name"/>
+    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
+    <br/>
+    <label class="body_label" for="task_body" style="text-anchor: start">Description: </label>
+    <textarea id="task_body" th:field="*{body}" th:type="text"></textarea>
+    <div style="color:red" th:if="${#fields.hasErrors('body')}" th:errors="*{body}">Description error</div>
+    <br/>
+    <label for="task_priority">Chose task priority: </label>
+    <select id="task_priority" th:field="*{taskPriority}">
+        <option value="HIGH">High</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="LOW">Low</option>
+    </select>
+    <br/>
+    <label for="task_status">Chose task status: </label>
+    <select id="task_status" th:field="*{taskStatus}">
+        <option value="OPENED">Opened</option>
+        <option value="PENDING">Pending</option>
+        <option value="PROCESSING">Processing</option>
+        <option value="CLOSED">Closed</option>
+    </select>
+    <br/>
+    <select id="task_executor" th:field="*{executor}">
+        <option th:each="man : ${allPersons}" th:value="${man.getId()}" th:text="${man.getName()}">value</option>
+    </select>
+    <br/>
+    <label for="task_deadline">Deadline: </label>
+    <input id="task_deadline" th:field="*{deadline}" th:type="date"/>
+    <div style="color:red" th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}">DeadLine error</div>
+    <br/>
+    <input type="submit" value="Update">
+    <a th:href="@{/alltasks/{task_Id}(task_Id=${task.getId()})}"><input type="button" value="Return"></a>
+</form>
 </body>
 </html>

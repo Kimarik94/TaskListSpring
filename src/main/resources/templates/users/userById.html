@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit user data</title>
+</head>
+<body>
+<p th:text="'User`s name: ' + ${user.getName()} + ', ' + ${user.getAge()}">user name</p>
+<hr/>
+<p th:text="'Email: ' + ${user.getEmail()}">value</p>
+<p th:text="'Username: ' + ${user.getUsername()}">value</p>
+<p th:text="'Password: ' +${user.getPassword()}">value</p>
+<div th:each="role : ${roles}">
+    <a th:text="${role.getName()}">value</a>
+</div>
+<hr/>
+<a th:href="@{/users/{user_id}/editUser(user_id=${user.getId()})}"><input type="button" value="Edit"></a><a href="/users"><input type="button" value="Return"></a>
+</body>
+</html>

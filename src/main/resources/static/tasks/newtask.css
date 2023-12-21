@@ -1,0 +1,9 @@
+.body_label {
+    display: block;
+    margin-bottom: 5px;
+}
+textarea {
+    width: 40%;
+    min-height: 100px;
+    resize: vertical;
+}

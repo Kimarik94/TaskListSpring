@@ -3,26 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Task</title>
+    <link rel="stylesheet" href="/tasks/newtask.css">
 </head>
 <body>
-<header>New Task - <label>creating by: </label><label th:text="${person.getName()}">value</label></header>
+<header><label>Creating by: </label><label th:text="${person.getName()}">value</label></header>
 <form th:action="@{/alltasks}" th:method="POST" th:object="${task}">
-    <label for="task_name">Name: </label>
+    <label for="task_name">Task name: </label>
     <input id="task_name" th:field="*{name}" th:type="text"/>
+    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
     <br/>
-    <label for="task_body">Description: </label>
+    <label class="body_label" for="task_body" style="text-anchor: start">Description: </label>
     <textarea id="task_body" th:field="*{body}" th:type="text"></textarea>
-    <br/>
-    <label for="task_status">Chose task status: </label>
-    <input id="task_status" th:field="*{taskStatus}" th:type="text"/>
+    <div style="color:red" th:if="${#fields.hasErrors('body')}" th:errors="*{body}">Description error</div>
     <br/>
     <label for="task_priority">Chose task priority: </label>
-    <input id="task_priority" th:field="*{taskPriority}" th:type="text"/>
+    <select id="task_priority" th:field="*{taskPriority}">
+        <option value="HIGH">High</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="LOW">Low</option>
+    </select>
+    <br/>
+    <select id="task_executor" th:field="*{executor}">
+        <option th:each="man : ${allPersons}" th:value="${man.getId()}" th:text="${man.getName()}">value</option>
+    </select>
     <br/>
     <label for="task_deadline">Deadline: </label>
     <input id="task_deadline" th:field="*{deadline}" th:type="date"/>
-    <br/>
-
+    <div style="color:red" th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}">DeadLine error</div>
     <br/>
     <button type="submit">Create Task</button>
     <a href="/alltasks"><input type="button" value="Return"></a>

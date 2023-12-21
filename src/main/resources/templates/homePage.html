@@ -8,8 +8,13 @@
 <body>
 
 <p>Welcome, <span th:text="${person.getName()}"></span>!</p>
-<p>Your roles: <span th:each="role : ${person.getRoles()}" th:text="${role.getName()}"></span></p>
+<p>Your role: <span th:each="role : ${person.getRoles()}" th:text="${role.getName()}"></span></p>
+<p th:if="${#strings.contains(person.getRoles(), 'ADMIN')}">
+    User <a th:href="@{/users}">interface</a>
+</p>
 <p>Task <a th:href="@{/alltasks}">interface</a></p>
-
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout" />
+</form>
 </body>
 </html>

@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Task</title>
 </head>
 <body>
-Task#: <p th:text="${task_Id} + ' '+ ${task.getName()} + ', ' + ${task.getCreationDate()}">taskName + creation date</p>
+<p th:text="'Task: ' + ${task.getName()}">taskName + creation date</p>
 <hr/>
-Creator: <p th:text="">value</p>
-Description: <p th:text="${task.getBody()}">taskBody</p>
+<p th:text="'Creator: ' + ${task.getCreator().getName()} + ' (on ' +${task.getCreationDate()} + ')'">value</p>
+<p th:text="'Executor: ' + ${task.getExecutor().getName()}">value</p>
+<p th:text="'Deadline: ' +${task.getDeadline()}">value</p>
 <hr/>
-<a href="/alltasks"><input type="button" value="Return"></a>
+Description:
+<p th:utext="${task.getBody()}">taskBody</p>
+<hr/>
+<a th:href="@{/alltasks/{task_Id}/editTask(task_Id=${task.getId()})}"><input type="button" value="Edit"></a><a href="/alltasks"><input type="button" value="Return"></a>
+<form th:method="DELETE" th:action="@{/alltasks/{task_Id}(task_Id=${task.getId()})}">
+    <input type="submit" value="Delete"/>
+</form>
 </body>
 </html>

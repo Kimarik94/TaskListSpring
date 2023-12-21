@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User data</title>
+</head>
+<body>
+<header><label>User: </label><label th:text="${user.getName()}">value</label></header>
+<form th:method="PATCH" th:action="@{/users/{user_Id}(user_Id=${user.getId()})}" th:object="${user}">
+  <label for="person_name">User name: </label>
+  <input th:type="text" th:field="*{name}" id="person_name"/>
+  <br/>
+  <label for="person_age">User age: </label>
+  <input th:type="text" th:field="*{age}" id="person_age"/>
+  <br/>
+  <label for="person_email">User age: </label>
+  <input th:type="text" th:field="*{email}" id="person_email"/>
+  <br/>
+  <label for="person_username">User username: </label>
+  <input th:type="text" th:field="*{username}" id="person_username"/>
+  <br/>
+  <label for="person_password">User password: </label>
+  <input th:type="text" th:field="*{password}" id="person_password"/>
+  <br/>
+  <label for="person_role" style="text-anchor: start">Choose user role: </label>
+  <select id="person_role" th:field="*{roles}" multiple="multiple">
+    <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role.name}" th:selected="${user.roles != null and user.roles.contains(role)}"></option>
+  </select>
+  <br/>
+  <input type="submit" value="Update">
+  <a th:href="@{/users/{user_id}(user_id=${user.getId()})}"><input type="button" value="Return"></a>
+</form>
+</body>
+</html>

@@ -1,26 +1,36 @@
 package ru.imp.TaskListSpring.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "persons")
-public class Person {
+@Setter
+@Getter
+@NoArgsConstructor
+public class Person implements UserDetails {
     @Id
     @Column(name = "person_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "creatorId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
     private List<Task> creatorTasks;
+
+    @OneToMany(mappedBy = "executor", fetch = FetchType.EAGER)
+    private List<Task> executorTasks;
 
     @Column(name = "person_name")
     @NotEmpty(message = "Please input your full name!")
@@ -46,110 +56,47 @@ public class Person {
     @NotEmpty(message = "Field password has not to be empty")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(
             name = "person_roles",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<PersonRole> roles = new HashSet<>();
-
-    public Person() {
-
-    }
+    private Set<Role> roles = new HashSet<>();
 
     public Person(String name, int age, String email, String username, String password) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.username = username;
+        this.password = password;
         this.creatorTasks = new ArrayList<>();
-        this.name = name;
-        this.age = age;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<Task> getCreatorTasks() {
-        return creatorTasks;
-    }
-
-    public void setCreatorTasks(List<Task> creatorTasks) {
-        this.creatorTasks = creatorTasks;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<PersonRole> getRoles() {
-        return this.roles;
-    }
-
-    public void setRoles(Set<PersonRole> roles) {
-        this.roles = roles;
-    }
-
-    public void addRoleToPerson(PersonRole role){
-        this.roles.add(role);
-    }
-
-    public void deleteRoleFromPerson(PersonRole role){
-        this.roles.remove(role);
+        this.executorTasks = new ArrayList<>();
     }
 
     @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", creatorTasks=" + creatorTasks +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.getRoles().stream()
+                              .map(role -> new SimpleGrantedAuthority(role.getName()))
+                              .collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
