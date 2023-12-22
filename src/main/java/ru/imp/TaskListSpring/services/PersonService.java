@@ -19,11 +19,13 @@ public class PersonService implements UserDetailsService {
 
     private final PersonRepository personRepository;
     private final RoleService roleService;
+    private final TaskService taskService;
 
     @Autowired
-    public PersonService(PersonRepository personRepository, RoleService personRoleService) {
+    public PersonService(PersonRepository personRepository, RoleService personRoleService, TaskService taskService) {
         this.personRepository = personRepository;
         this.roleService = personRoleService;
+        this.taskService = taskService;
     }
 
     public List<Person> findAll() {
@@ -52,6 +54,17 @@ public class PersonService implements UserDetailsService {
 
     @Transactional
     public void deletePerson(Long personId) {
+        Person person = findById(personId);
+        List<Task> createdTasks = person.getCreatorTasks();
+        List<Task> executionTasks = person.getExecutorTasks();
+        if(createdTasks.isEmpty() && executionTasks.isEmpty()) personRepository.deleteById(personId);
+        else{
+            for(Task task : createdTasks){
+                if (task.getCreator() == person && task.getExecutor() == person) taskService.deleteTask(task.getId());
+                if (task.getCreator() == person && task.getExecutor() != person) task.setCreator(task.getExecutor());
+                if (task.getCreator() != person && task.getExecutor() == person) task.setExecutor(task.getCreator());
+            }
+        }
         personRepository.deleteById(personId);
     }
 

@@ -1,6 +1,7 @@
 package ru.imp.TaskListSpring.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,7 +16,6 @@ import javax.validation.Valid;
 public class AuthController {
     private final PersonService personService;
 
-    @Autowired
     public AuthController(PersonService personService) {
         this.personService = personService;
     }
@@ -25,6 +25,11 @@ public class AuthController {
         return "/loginPage";
     }
 
+    @RequestMapping("/")
+    public String index() {
+        return "redirect:/home";
+    }
+
     @GetMapping("/registration")
     public String onRegistration(@ModelAttribute("person") Person person){
         return "registrationPage";
@@ -32,6 +37,9 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid Person person){
+        String passwordFromUser = person.getPassword();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+        person.setPassword(encoder.encode(passwordFromUser));
         personService.save(person);
         return "redirect:/login";
     }

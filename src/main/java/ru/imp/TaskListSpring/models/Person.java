@@ -41,7 +41,7 @@ public class Person implements UserDetails {
     @Max(value = 65, message = "Age has to be less than 65")
     @NotEmpty(message = "Please input your age!")
     @Column(name = "person_age")
-    private int age;
+    private Integer age;
 
     @NotEmpty(message = "Please input email-address")
     @Column(name = "person_email")

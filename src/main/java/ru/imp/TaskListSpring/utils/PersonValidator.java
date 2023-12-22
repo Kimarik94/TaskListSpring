@@ -22,6 +22,15 @@ public class PersonValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         Person person = (Person) o;
-
+        if(person.getName().isEmpty())
+            errors.rejectValue("name", "", "User name can not be empty");
+        if(person.getAge() == null)
+            errors.rejectValue("age", "", "User age can not be empty");
+        if(person.getEmail().isEmpty())
+            errors.rejectValue("email", "", "User email can not be empty \n Or format not valid");
+        if(person.getUsername().isEmpty())
+            errors.rejectValue("username", "", "User username can not be empty \n Or format not valid");
+        if(person.getPassword().isEmpty())
+            errors.rejectValue("password", "", "User password can not be empty \n Or format not valid");
     }
 }

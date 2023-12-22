@@ -1,29 +1,34 @@
 package ru.imp.TaskListSpring.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.imp.TaskListSpring.models.Person;
 import ru.imp.TaskListSpring.models.Role;
 import ru.imp.TaskListSpring.services.PersonService;
 import ru.imp.TaskListSpring.services.RoleService;
+import ru.imp.TaskListSpring.utils.PersonValidator;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/users")
 public class PersonController{
     private final PersonService personService;
     private final RoleService roleService;
+    private final PersonValidator personValidator;
 
     @Autowired
-    public PersonController(PersonService personService, RoleService roleService) {
+    public PersonController(PersonService personService, RoleService roleService, PersonValidator personValidator) {
         this.personService = personService;
         this.roleService = roleService;
+        this.personValidator = personValidator;
     }
 
     @GetMapping
@@ -45,7 +50,6 @@ public class PersonController{
     @GetMapping("/{user_id}/editUser")
     public String editUser(@PathVariable("user_id") Long user_id, Model model){
         model.addAttribute("user", personService.findById(user_id));
-
         List<Role> roles = roleService.findAllRoles();
         model.addAttribute("allRoles", roles);
         return "users/editUser";
@@ -53,8 +57,27 @@ public class PersonController{
 
     @PatchMapping("/{user_id}")
     public String update(@ModelAttribute("user") @Valid Person person,
-                         @PathVariable("user_id") Long id){
+                         @PathVariable("user_id") Long id, Model model,
+                         BindingResult bindingResult){
+        personValidator.validate(person, bindingResult);
+        if(bindingResult.hasErrors()){
+            List<Role> roles = roleService.findAllRoles();
+            model.addAttribute("allRoles", roles);
+            person.setId(id);
+            model.addAttribute("user", person);
+            return "users/editUser";
+        }
+        String tempPassword = person.getPassword();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        person.setPassword(encoder.encode(tempPassword));
+
         personService.updatePerson(id,person);
+        return "redirect:/users";
+    }
+
+    @DeleteMapping("/{task_Id}")
+    public String delete(@PathVariable("task_Id") Long id){
+        personService.deletePerson(id);
         return "redirect:/users";
     }
 }
