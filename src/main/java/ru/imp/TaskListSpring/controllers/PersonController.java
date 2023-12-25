@@ -67,9 +67,6 @@ public class PersonController{
             model.addAttribute("user", person);
             return "users/editUser";
         }
-        String tempPassword = person.getPassword();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        person.setPassword(encoder.encode(tempPassword));
 
         personService.updatePerson(id,person);
         return "redirect:/users";

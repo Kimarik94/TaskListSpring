@@ -37,9 +37,6 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid Person person){
-        String passwordFromUser = person.getPassword();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-        person.setPassword(encoder.encode(passwordFromUser));
         personService.save(person);
         return "redirect:/login";
     }
