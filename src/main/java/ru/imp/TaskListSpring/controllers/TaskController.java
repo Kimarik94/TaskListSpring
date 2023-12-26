@@ -1,14 +1,11 @@
 package ru.imp.TaskListSpring.controllers;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import ru.imp.TaskListSpring.enums.TaskStatus;
 import ru.imp.TaskListSpring.models.Person;
@@ -18,21 +15,17 @@ import ru.imp.TaskListSpring.services.TaskService;
 import ru.imp.TaskListSpring.utils.TaskValidator;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/alltasks")
+@RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
     private final PersonService personService;
     private final TaskValidator taskValidator;
-
-    @Autowired
-    public TaskController(TaskService taskService, PersonService personService, PersonService personService1, TaskValidator taskValidator) {
-        this.taskService = taskService;
-        this.personService = personService1;
-        this.taskValidator = taskValidator;
-    }
 
     @GetMapping
     public String allTasks(Model model, Authentication authentication) {

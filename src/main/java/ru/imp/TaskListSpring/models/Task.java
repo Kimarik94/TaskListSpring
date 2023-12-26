@@ -34,9 +34,6 @@ public class Task {
     @JoinColumn(name = "executor_id")
     private Person executor;
 
-    @Column(name = "task_creation_date")
-    @Temporal(TemporalType.DATE)
-    private Date creationDate;
 
     @Column(name = "task_body")
     @NotEmpty(message = "Please fill task description")
@@ -49,6 +46,10 @@ public class Task {
     @Column(name = "task_priority")
     @Enumerated(EnumType.STRING)
     private TaskPriority taskPriority;
+
+    @Column(updatable = false, name = "task_creation_date")
+    @Temporal(TemporalType.DATE)
+    private Date creationDate;
 
     @Column(name = "task_edit_date")
     @Temporal(TemporalType.TIMESTAMP)
