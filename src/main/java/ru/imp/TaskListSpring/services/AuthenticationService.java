@@ -1,51 +1,58 @@
 package ru.imp.TaskListSpring.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.imp.TaskListSpring.dtos.LoginPersonDto;
-import ru.imp.TaskListSpring.dtos.RegisterPersonDto;
+import ru.imp.TaskListSpring.dtos.AuthenticationRequest;
+import ru.imp.TaskListSpring.dtos.AuthenticationResponse;
+import ru.imp.TaskListSpring.dtos.RegisterRequest;
+import ru.imp.TaskListSpring.repositories.PersonRepository;
 import ru.imp.TaskListSpring.models.Person;
 
+import java.util.ArrayList;
+
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
-    private final PersonService personService;
-
+    private final PersonRepository personRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationService(
-            PersonService personService,
-            AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.authenticationManager = authenticationManager;
-        this.personService = personService;
-        this.passwordEncoder = passwordEncoder;
+    public AuthenticationResponse register(RegisterRequest request) {
+        var person = Person.builder()
+                .name(request.getName())
+                .age(request.getAge())
+                .email(request.getEmail())
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .roles(personRepository.findByUsername(request.getUsername()).get().getRoles())
+                .creatorTasks(new ArrayList<>())
+                .executorTasks(new ArrayList<>())
+                .build();
+        personRepository.save(person);
+
+        var jwtToken = jwtService.generateToken(person);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
-    public Person signup(RegisterPersonDto personDto) {
-        Person person = new Person();
-        person.setName(personDto.getName());
-        person.setAge(personDto.getAge());
-        person.setUsername(personDto.getUsername());
-        person.setPassword(passwordEncoder.encode(personDto.getPassword()));
-        person.setEmail(personDto.getEmail());
-
-        return personService.save(person);
-    }
-
-    public Person authenticate(LoginPersonDto personDto) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        personDto.getUsername(),
-                        personDto.getPassword()
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
+                (
+                    request.getUsername(),
+                    request.getPassword()
                 )
         );
-
-        return personService.findByUsername(personDto.getUsername())
+        var person = personRepository.findByUsername(request.getUsername())
                 .orElseThrow();
+        var jwtToken = jwtService.generateToken(person);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 }

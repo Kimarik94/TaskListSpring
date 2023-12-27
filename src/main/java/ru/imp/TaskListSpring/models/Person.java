@@ -1,9 +1,7 @@
 package ru.imp.TaskListSpring.models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,24 +13,21 @@ import javax.validation.constraints.Pattern;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Entity
-@Table(name = "persons")
-@Setter
-@Getter
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "persons", uniqueConstraints = {
+            @UniqueConstraint(columnNames = "person_username"),
+            @UniqueConstraint(columnNames = "person_email")})
 public class Person implements UserDetails {
     @Id
     @Column(name = "person_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
-    private List<Task> creatorTasks;
-
-    @OneToMany(mappedBy = "executor", fetch = FetchType.EAGER)
-    private List<Task> executorTasks;
-
-    @Column(name = "person_name")
+    @Column(name = "person_fullname")
     @NotEmpty(message = "Please input your full name!")
     @Pattern(regexp = "[A-Z]\\w+ [A-Z]\\w+ [A-Z]\\w+", message = "Expectation \"SecondName FirstName MiddleName\"")
     private String name;
@@ -56,29 +51,21 @@ public class Person implements UserDetails {
     @NotEmpty(message = "Field password has not to be empty")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "person_roles",
+    @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
+    private List<Task> creatorTasks;
+
+    @OneToMany(mappedBy = "executor", fetch = FetchType.EAGER)
+    private List<Task> executorTasks;
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(name = "person_roles",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public Person(String name, int age, String email, String username, String password) {
-        this.name = name;
-        this.age = age;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.creatorTasks = new ArrayList<>();
-        this.executorTasks = new ArrayList<>();
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.getRoles().stream()
-                              .map(role -> new SimpleGrantedAuthority(role.getName()))
-                              .collect(Collectors.toSet()
-                              );
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
     }
 
     @Override

@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.imp.TaskListSpring.dtos.RegisterPersonDto;
+import ru.imp.TaskListSpring.dtos.RegisterRequest;
 import ru.imp.TaskListSpring.models.Person;
 import ru.imp.TaskListSpring.models.Role;
 import ru.imp.TaskListSpring.models.Task;
@@ -61,7 +60,7 @@ public class PersonService implements UserDetailsService {
     }
 
     @Transactional
-    public Person save(RegisterPersonDto registerPersonDto) {
+    public Person save(RegisterRequest registerPersonDto) {
         Person newPerson = new Person();
         newPerson.setName(registerPersonDto.getName());
         newPerson.setAge(registerPersonDto.getAge());
