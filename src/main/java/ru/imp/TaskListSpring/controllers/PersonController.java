@@ -1,9 +1,7 @@
 package ru.imp.TaskListSpring.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,17 +17,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class PersonController{
     private final PersonService personService;
     private final RoleService roleService;
     private final PersonValidator personValidator;
-
-    @Autowired
-    public PersonController(PersonService personService, RoleService roleService, PersonValidator personValidator) {
-        this.personService = personService;
-        this.roleService = roleService;
-        this.personValidator = personValidator;
-    }
 
     @GetMapping
     public String getPersonDetails(Model model, Authentication authentication){
